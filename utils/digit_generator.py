@@ -2,7 +2,7 @@ import json
 from digits import DigitSequence, DigitConfig
 import numpy as np
 from collections.abc import Sequence
-from PIL import ImageFont, ImageDraw, Image 
+from helper import test_annotations
 
 
 def random_digit_sequence_generator(digit_size,
@@ -31,23 +31,14 @@ def random_digit_sequence_generator(digit_size,
 
         yield arrays, annotations
 
-def test_annotations(array,annotation):
-    image = Image.fromarray(array)
-    draw = ImageDraw.Draw(image)
 
-    for each in annotation["annotations"]:
-        draw.rectangle(each["bbox"],
-                    outline=tuple([255,82,82]),
-                    width=1)
-
-    image.show()
 
 if __name__ == "__main__":
     with open("D:\\ACRA\\ImageGenerationPipeline\\Experiments\\digit_configurations.json","r+",encoding="utf-8") as f0:
-        config_file = json.load(f0)
+        configuration_file = json.load(f0)
 
     digit_gen = random_digit_sequence_generator(
-        10, config_file, batch=10, image_size=(128,128))
+        10, configuration_file, batch=10, image_size=(128,128))
     ret_arr, ret_ann = next(digit_gen)
     ret_arr, ret_ann = next(digit_gen)
     #print(ret_arr[0].shape)
