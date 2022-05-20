@@ -144,7 +144,7 @@ class DigitOperator(ABC):
         annotation = self.to_annotation()
 
         if self.resize:
-            for ann in annotation["annotations"]:
+            for ann in annotation:
                 ann["bbox"] = resize_and_align_bounding_box(ann["bbox"],array,self.resize[0],self.resize[1])
 
             array = cv2.resize(array,dsize=tuple(self.resize))
@@ -160,9 +160,10 @@ class Digit(DigitOperator):
     """
     Class That generate single Digit Image
     """
-    def __init__(self,config:DigitConfig,size:Sequence[tuple[int,int]]=None) -> None:
+    def __init__(self,config:DigitConfig,size:Sequence[tuple[int,int]]=None,memory:dict = {}) -> None:
         super().__init__(resize=size)
         self.config = config
+        self.memory = memory
 
     def to_annotation(self) -> dict:
         """
@@ -173,14 +174,11 @@ class Digit(DigitOperator):
         """
 
         annotation = {
-                "id":0,
                 "category_id": self.config.digit,
-                "ignore": 0,
-                "iscrowd": 0,
                 "bbox":self.config.bbox
                 }
 
-        return {"annotations":[annotation]}
+        return annotation
 
     def draw_bbox(self,save_loc:str=None) -> None:
         """
@@ -200,8 +198,7 @@ class Digit(DigitOperator):
         if save_loc:
             image.save(save_loc)
 
-
-    def to_array(self) -> np.array:
+    def __gen_img_array(self):
         """
         create digit image as np.array
 
@@ -218,17 +215,26 @@ class Digit(DigitOperator):
         return cv2_im_processed
 
 
+    def to_array(self) -> np.array:
+        try:
+            return self.memory[self.config.digit]
+        except KeyError:
+            self.memory[self.config.digit] = self.__gen_img_array()
+            return self.memory[self.config.digit]
+        
+
+
     
 
 class DigitSequence(DigitOperator):
     """
     Class That generate Sequence of Digit Image
     """
-    def __init__(self,configs:Sequence[DigitConfig],size:Sequence[tuple[int,int]]=None) -> None:
+    def __init__(self,configs:Sequence[DigitConfig],size:Sequence[tuple[int,int]]=None,memory:dict={}) -> None:
         super().__init__(resize=size)
         self.configs = configs
         self.__set_offset()
-        self.digits = [Digit(config=x) for x in self.configs]
+        self.digits = [Digit(config=x,memory=memory) for x in self.configs]
 
     def to_array(self) -> np.array:
         digits_stack = [digit.to_array() for digit in self.digits]
@@ -247,21 +253,18 @@ class DigitSequence(DigitOperator):
     def to_annotation(self) -> dict:
         lis_annotations = []
 
-        for __id,each in enumerate(self.configs):
+        for each in self.configs:
             if each.digit == " ":
                 continue
 
             annotation = {
-                "id":__id,
-                "category_id": each.digit,
-                "ignore": 0,
-                "iscrowd": 0
+                "category_id": int(each.digit),
+                "bbox":each.bbox
                 }
 
-            annotation["bbox"] = each.bbox
             lis_annotations.append(annotation)
 
-        return {"annotations":lis_annotations}
+        return lis_annotations
 
     def draw_bbox(self,save_loc:str=None) -> None:
         """
