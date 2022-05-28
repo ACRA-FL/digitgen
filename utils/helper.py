@@ -8,8 +8,6 @@ def generate_random_digits(digit_size,allowed_digits,spaces="None"):
     row = np.take(allowed_digits, random_array)
     row = "".join(list(map(str, row.tolist())))
 
-    if spaces == random
-
     return row
 
 

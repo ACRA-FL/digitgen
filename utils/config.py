@@ -189,7 +189,6 @@ CONFIGURATION = {
         }
     },
     "common_configs": {
-        "font_file_loc": "D:\\ACRA\\ImageGenerationPipeline\\Experiments\\terminal-grotesque.grotesque-regular.ttf",
         "background_color": [
             255,
             255,
