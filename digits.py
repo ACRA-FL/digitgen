@@ -254,9 +254,6 @@ class DigitSequence(DigitOperator):
         lis_annotations = []
 
         for each in self.configs:
-            if each.digit == " ":
-                continue
-
             annotation = {
                 "category_id": int(each.digit),
                 "bbox":each.bbox
@@ -277,9 +274,6 @@ class DigitSequence(DigitOperator):
         draw = ImageDraw.Draw(image)
 
         for each in self.configs:
-            if each.digit == " ":
-                continue
-
             draw.rectangle(each.bbox,
                     outline=tuple(each.bbox_color),
                     width=each.bbox_width)
