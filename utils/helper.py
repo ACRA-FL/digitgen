@@ -1,11 +1,46 @@
-from random import random
 from PIL import ImageDraw, Image 
 import numpy as np
+from numpy import random
 
-def generate_random_digits(digit_size,allowed_digits,spaces="None"):
+def randomly_insert(row,num_times,character):
+    arr_char = np.full((num_times),character)
+    tot_arr = np.concatenate((row,arr_char))
+    random.shuffle(tot_arr)
+    return tot_arr
+
+def split_insert(row,sectors,spaces_per_sector,digit_size,character):
+    gap = digit_size//(sectors-1)
+    for gap_num in range(1,sectors):
+        np.insert(row, gap_num*gap, character)
+        
+    return row
+
+
+def add_spaces(row,space_type,spaces,sectors,spaces_per_sector,digit_size):
+    if space_type == "random":
+        assert spaces
+        row = randomly_insert(row,spaces," ")
+
+    if space_type == "space":
+        assert sectors
+        assert spaces_per_sector
+
+        row = split_insert(row,sectors,spaces_per_sector,digit_size," ")
+
+
+
+
+    return row
+
+
+
+def generate_random_digits(digit_size,allowed_digits,space_type,spaces,sectors,spaces_per_sector):
     random_array = np.random.rand(digit_size)*len(allowed_digits)
     random_array = random_array.astype(np.int32)
     row = np.take(allowed_digits, random_array)
+
+    row = add_spaces(row,space_type,spaces,sectors,spaces_per_sector,digit_size)
+
     row = "".join(list(map(str, row.tolist())))
 
     return row

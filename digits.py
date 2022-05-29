@@ -255,7 +255,7 @@ class DigitSequence(DigitOperator):
 
         for each in self.configs:
             annotation = {
-                "category_id": int(each.digit),
+                "category_id": int(each.digit) if each.digit != " " else " ",
                 "bbox":each.bbox
                 }
 

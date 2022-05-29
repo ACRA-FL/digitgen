@@ -27,7 +27,7 @@ class DigitGenerator(object):
 
         self.memory = {}  # dict.fromkeys(allowed_digits,None)
 
-    def generate(self) -> Sequence[tuple[np.array, dict]]:
+    def generate(self,space_type="None",num_spaces=None,sectors=None,spaces_per_sector=None) -> Sequence[tuple[np.array, dict]]:
         """
         Generator function of the dataset
 
@@ -39,7 +39,7 @@ class DigitGenerator(object):
         annotations = {"annotations": []}
         arrays = []
         for _ in range(self.samples):
-            row = generate_random_digits(self.digit_size, self.allowed_digits)
+            row = generate_random_digits(self.digit_size, self.allowed_digits,space_type,num_spaces,sectors,spaces_per_sector)
 
             configurations = [DigitConfig.load_config(
                 self.config, x) for x in row]
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     digit_gen = DigitGenerator(10, os.path.join(
         "font", "terminal-grotesque.grotesque-regular.ttf"), samples=100000, image_size=(128, 48))
-    ret_arr, ret_ann = digit_gen.generate()
+    ret_arr, ret_ann = digit_gen.generate(space_type="random",num_spaces=2)
 
     end = process_time()
 
