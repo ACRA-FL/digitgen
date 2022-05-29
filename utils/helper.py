@@ -9,9 +9,10 @@ def randomly_insert(row,num_times,character):
     return tot_arr
 
 def split_insert(row,sectors,spaces_per_sector,digit_size,character):
-    gap = digit_size//(sectors-1)
+    gap = digit_size//(sectors)
     for gap_num in range(1,sectors):
-        np.insert(row, gap_num*gap, character)
+        for _ in range(spaces_per_sector):
+            row = np.insert(row, gap_num*gap, character)
         
     return row
 

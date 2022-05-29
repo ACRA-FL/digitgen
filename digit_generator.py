@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     digit_gen = DigitGenerator(10, os.path.join(
         "font", "terminal-grotesque.grotesque-regular.ttf"), samples=100000, image_size=(128, 48))
-    ret_arr, ret_ann = digit_gen.generate(space_type="random",num_spaces=2)
+    ret_arr, ret_ann = digit_gen.generate(space_type="space",sectors=3,spaces_per_sector=2)
 
     end = process_time()
 
