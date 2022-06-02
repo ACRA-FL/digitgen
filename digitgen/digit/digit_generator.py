@@ -1,14 +1,13 @@
 import os
-import time
 from collections.abc import Sequence
 from time import process_time
 
 import numpy as np
 
 from digits import DigitConfig, DigitSequence
-from utils.config import CONFIGURATION
-from utils.helper import (format_annotations, generate_random_digits,
-                          test_annotations)
+from digitgen.utils.config import CONFIGURATION
+from digitgen.utils.helper import (format_annotations, generate_random_digits,
+                                   test_annotations)
 
 
 class DigitGenerator(object):
@@ -16,7 +15,7 @@ class DigitGenerator(object):
                  font_file: str,
                  samples=1,
                  image_size: Sequence[tuple[int, int]] = None,
-                 allowed_digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) -> None:
+                 allowed_digits=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) -> None:
         self.digit_size = digit_size
         self.samples = samples
         self.image_size = image_size
@@ -27,7 +26,8 @@ class DigitGenerator(object):
 
         self.memory = {}  # dict.fromkeys(allowed_digits,None)
 
-    def generate(self,space_type="None",num_spaces=None,sectors=None,spaces_per_sector=None) -> Sequence[tuple[np.array, dict]]:
+    def generate(self, space_type="None", num_spaces=None, sectors=None, spaces_per_sector=None) -> Sequence[
+        tuple[np.array, dict]]:
         """
         Generator function of the dataset
 
@@ -39,7 +39,8 @@ class DigitGenerator(object):
         annotations = {"annotations": []}
         arrays = []
         for _ in range(self.samples):
-            row = generate_random_digits(self.digit_size, self.allowed_digits,space_type,num_spaces,sectors,spaces_per_sector)
+            row = generate_random_digits(self.digit_size, self.allowed_digits, space_type, num_spaces, sectors,
+                                         spaces_per_sector)
 
             configurations = [DigitConfig.load_config(
                 self.config, x) for x in row]
@@ -56,11 +57,11 @@ if __name__ == "__main__":
     start = process_time()
 
     digit_gen = DigitGenerator(10, os.path.join(
-        "font", "terminal-grotesque.grotesque-regular.ttf"), samples=100000, image_size=(128, 48))
-    ret_arr, ret_ann = digit_gen.generate(space_type="space",sectors=3,spaces_per_sector=2)
+        "../font", "terminal-grotesque.grotesque-regular.ttf"), samples=100000, image_size=(128, 48))
+    ret_arr, ret_ann = digit_gen.generate(space_type="space", sectors=3, spaces_per_sector=2)
 
     end = process_time()
 
-    print(len(ret_arr), " Timetaken :- ", end-start)
+    print(len(ret_arr), " Timetaken :- ", end - start)
     test_annotations(
         ret_arr[0], [x for x in ret_ann["annotations"] if x["image_id"] == 0])
