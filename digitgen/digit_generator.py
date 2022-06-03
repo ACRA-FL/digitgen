@@ -1,20 +1,19 @@
 import os
-from collections.abc import Sequence
 from time import process_time
 
 import numpy as np
 
-from digits import DigitConfig, DigitSequence
-from digitgen.utils.config import CONFIGURATION
-from digitgen.utils.helper import (format_annotations, generate_random_digits,
-                                   test_annotations)
+from .digit import DigitConfig, DigitSequence
+from .utils import CONFIGURATION
+from .utils import (format_annotations, generate_random_digits,
+                    test_annotations)
 
 
 class DigitGenerator(object):
     def __init__(self, digit_size: int,
                  font_file: str,
                  samples=1,
-                 image_size: Sequence[tuple[int, int]] = None,
+                 image_size= None,
                  allowed_digits=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) -> None:
         self.digit_size = digit_size
         self.samples = samples
@@ -26,8 +25,7 @@ class DigitGenerator(object):
 
         self.memory = {}  # dict.fromkeys(allowed_digits,None)
 
-    def generate(self, space_type="None", num_spaces=None, sectors=None, spaces_per_sector=None) -> Sequence[
-        tuple[np.array, dict]]:
+    def generate(self, space_type="None", num_spaces=None, sectors=None, spaces_per_sector=None):
         """
         Generator function of the dataset
 
@@ -56,8 +54,7 @@ class DigitGenerator(object):
 if __name__ == "__main__":
     start = process_time()
 
-    digit_gen = DigitGenerator(10, os.path.join(
-        "../font", "terminal-grotesque.grotesque-regular.ttf"), samples=100000, image_size=(128, 48))
+    digit_gen = DigitGenerator(10, "D:\\ACRA\\digitgen\\digitgen\\font\\terminal-grotesque.grotesque-regular.ttf", samples=100000, image_size=(128, 48))
     ret_arr, ret_ann = digit_gen.generate(space_type="space", sectors=3, spaces_per_sector=2)
 
     end = process_time()

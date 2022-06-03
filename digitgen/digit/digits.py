@@ -1,6 +1,5 @@
 from abc import ABC,abstractmethod
 import json
-from collections.abc import Sequence
 
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image  
@@ -85,7 +84,7 @@ class DigitConfig(object):
 
 
 class DigitOperator(ABC):
-    def __init__(self,resize:Sequence[tuple[int,int]]=None) -> None:
+    def __init__(self,resize=None) -> None:
         super().__init__()
         self.resize = resize
 
@@ -139,7 +138,7 @@ class DigitOperator(ABC):
     def draw_bbox(self,save_loc:str=None) -> None:
         pass
 
-    def data(self) -> Sequence[tuple[np.array,dict]]:
+    def data(self):
         array = self.to_array()
         annotation = self.to_annotation()
 
@@ -160,7 +159,7 @@ class Digit(DigitOperator):
     """
     Class That generate single Digit Image
     """
-    def __init__(self,config:DigitConfig,size:Sequence[tuple[int,int]]=None,memory:dict = {}) -> None:
+    def __init__(self,config:DigitConfig,size=None,memory:dict = {}) -> None:
         super().__init__(resize=size)
         self.config = config
         self.memory = memory
@@ -230,7 +229,7 @@ class DigitSequence(DigitOperator):
     """
     Class That generate Sequence of Digit Image
     """
-    def __init__(self,configs:Sequence[DigitConfig],size:Sequence[tuple[int,int]]=None,memory:dict={}) -> None:
+    def __init__(self,configs,size=None,memory:dict={}) -> None:
         super().__init__(resize=size)
         self.configs = configs
         self.__set_offset()
