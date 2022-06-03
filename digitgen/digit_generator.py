@@ -54,7 +54,7 @@ class DigitGenerator(object):
 if __name__ == "__main__":
     start = process_time()
 
-    digit_gen = DigitGenerator(10, "D:\\ACRA\\digitgen\\digitgen\\font\\terminal-grotesque.grotesque-regular.ttf", samples=100000, image_size=(128, 48))
+    digit_gen = DigitGenerator(10, "D:\\ACRA\\digitgen\\digitgen\\font\\terminal-grotesque.grotesque-regular.ttf", samples=100, image_size=(128, 48))
     ret_arr, ret_ann = digit_gen.generate(space_type="space", sectors=3, spaces_per_sector=2)
 
     end = process_time()
