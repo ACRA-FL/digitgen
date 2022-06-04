@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
+from ..augmentation.augmentation import Augmentation
+
 
 def resize_and_align_bounding_box(bbox: list, original_image: np.array, target_width: int, target_height: int):
     y_, x_, _ = original_image.shape
@@ -83,11 +85,10 @@ class DigitConfig(object):
 
 
 class DigitOperator(ABC):
-    def __init__(self, class_type, resize=None, augmentations=[]) -> None:
+    def __init__(self, resize=None, augmentations=[]) -> None:
         super().__init__()
-        self.augmentations = augmentations
+        self.augmentations: list[Augmentation] = augmentations
         self.resize = resize
-        self.class_type = class_type
 
     @abstractmethod
     def to_array(self) -> np.array:
@@ -140,12 +141,22 @@ class DigitOperator(ABC):
         pass
 
     def apply_augmentations(self, array, annotations):
-        if type(self.class_type) == Digit:
-            pass
+        if type(array) == list:
+            for i in range(len(annotations)):
+                for aug in self.augmentations:
+                    array[i], annotations[i] = aug.apply_augmentation(array[i], annotations[i])
+
+        else:
+            for aug in self.augmentations:
+                array, annotations = aug.apply_augmentation(array, annotations)
+
+        return array, annotations
 
     def data(self):
         array = self.to_array()
         annotation = self.to_annotation()
+
+        array, annotation = self.apply_augmentations(array, annotation)
 
         if type(array) == list:
             array = np.hstack(array)
@@ -164,8 +175,8 @@ class Digit(DigitOperator):
     Class That generate single Digit Image
     """
 
-    def __init__(self, config: DigitConfig, size=None, memory: dict = {}) -> None:
-        super().__init__(Digit, resize=size)
+    def __init__(self, config: DigitConfig, size=None, memory: dict = {}, augmentations=[]) -> None:
+        super().__init__(augmentations=augmentations, resize=size)
         self.config = config
         self.memory = memory
 
@@ -231,8 +242,8 @@ class DigitSequence(DigitOperator):
     Class That generate Sequence of Digit Image
     """
 
-    def __init__(self, configs, size=None, memory: dict = {}) -> None:
-        super().__init__(Digit, resize=size)
+    def __init__(self, configs, size=None, memory: dict = {}, augmentations=[]) -> None:
+        super().__init__(augmentations=augmentations, resize=size)
         self.configs = configs
         self.__set_offset()
         self.digits = [Digit(config=x, memory=memory) for x in self.configs]

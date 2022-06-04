@@ -49,16 +49,3 @@ class DigitGenerator(object):
             format_annotations(annotations, annotation)
 
         return np.array(arrays), annotations
-
-
-if __name__ == "__main__":
-    start = process_time()
-
-    digit_gen = DigitGenerator(10, "D:\\ACRA\\digitgen\\digitgen\\font\\terminal-grotesque.grotesque-regular.ttf", samples=100, image_size=(128, 48))
-    ret_arr, ret_ann = digit_gen.generate(space_type="space", sectors=3, spaces_per_sector=2)
-
-    end = process_time()
-
-    print(len(ret_arr), " Timetaken :- ", end - start)
-    test_annotations(
-        ret_arr[0], [x for x in ret_ann["annotations"] if x["image_id"] == 0])
