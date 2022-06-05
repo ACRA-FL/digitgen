@@ -1,3 +1,5 @@
+CHUNK_SIZE = 32768
+
 CONFIGURATION = {
     "digit_config": {
         "0": {

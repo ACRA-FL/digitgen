@@ -141,14 +141,15 @@ class DigitOperator(ABC):
         pass
 
     def apply_augmentations(self, array, annotations):
-        if type(array) == list:
-            for i in range(len(annotations)):
-                for aug in self.augmentations:
-                    array[i], annotations[i] = aug.apply_augmentation(array[i], annotations[i])
+        if len(self.augmentations) > 0:
+            if type(array) == list:
+                for i in range(len(annotations)):
+                    for aug in self.augmentations:
+                        array[i], annotations[i] = aug.apply_augmentation(array[i], annotations[i])
 
-        else:
-            for aug in self.augmentations:
-                array, annotations = aug.apply_augmentation(array, annotations)
+            else:
+                for aug in self.augmentations:
+                    array, annotations = aug.apply_augmentation(array, annotations)
 
         return array, annotations
 
