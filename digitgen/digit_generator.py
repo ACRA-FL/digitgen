@@ -22,7 +22,7 @@ class DigitGenerator(object):
         self.config = CONFIGURATION
         self.config["common_configs"]["font_file_loc"] = self.font_type.get_font_file_location()
 
-        self.memory = {}  # dict.fromkeys(allowed_digits,None)
+        self.memory = {}
 
     def generate(self, space_type="None", num_spaces=None, sectors=None, spaces_per_sector=None):
         """
@@ -31,7 +31,6 @@ class DigitGenerator(object):
         Returns:
             Sequence[tuple[np.array,dict]]: img_array,annotation
         """
-        # print(np.unique(random_array,return_counts=True))
 
         annotations = {"annotations": []}
         arrays = []
