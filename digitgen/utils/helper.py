@@ -4,7 +4,7 @@ from numpy import random
 
 
 def randomly_insert(row, num_times, character):
-    arr_char = np.full((num_times), character)
+    arr_char = np.full(num_times, character)
     tot_arr = np.concatenate((row, arr_char))
     random.shuffle(tot_arr)
     return tot_arr
