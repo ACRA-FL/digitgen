@@ -188,6 +188,23 @@ CONFIGURATION = {
                 9,
                 26
             ]
+        },
+        "default": {
+            "fontscale": 30,
+            "size": [
+                10,
+                30
+            ],
+            "start_point": [
+                0,
+                0
+            ],
+            "bbox": [
+                1,
+                1,
+                9,
+                29
+            ]
         }
     },
     "common_configs": {

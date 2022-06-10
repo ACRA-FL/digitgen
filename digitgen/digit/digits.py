@@ -69,8 +69,11 @@ class DigitConfig(object):
         if isinstance(config_file, str):
             with open(config_file, "r+", encoding="utf-8") as f0:
                 config_file = json.load(f0)
+        try:
+            digit_config = config_file["digit_config"][digit]
+        except KeyError as k:
+            digit_config = config_file["digit_config"]["default"]
 
-        digit_config = config_file["digit_config"][digit]
         common_config = config_file["common_configs"]
         return DigitConfig(
             digit=digit,
