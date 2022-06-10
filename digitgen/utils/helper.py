@@ -1,6 +1,12 @@
+import os.path
+
 import numpy as np
+import requests
 from PIL import ImageDraw, Image
 from numpy import random
+import gdown
+
+from .config import CHUNK_SIZE
 
 
 def randomly_insert(row, num_times, character):
@@ -14,7 +20,7 @@ def split_insert(row, sectors, spaces_per_sector, digit_size, character):
     gap = digit_size // sectors
     for gap_num in range(1, sectors):
         for _ in range(spaces_per_sector):
-            row = np.insert(row, gap_num * gap + (gap_num-1)*spaces_per_sector, character)
+            row = np.insert(row, gap_num * gap + (gap_num - 1) * spaces_per_sector, character)
 
     return row
 
@@ -46,6 +52,7 @@ def generate_random_digits(digit_size, allowed_digits, space_type, spaces, secto
 
 
 def test_annotations(array, annotation):
+    array = array.astype(np.uint8)
     image = Image.fromarray(array)
     draw = ImageDraw.Draw(image)
 
@@ -70,3 +77,13 @@ def format_annotations(full_ann, row_ann):
         ann["image_id"] = current_img_id
 
         full_ann["annotations"].append(ann)
+
+
+def download_font_from_gdrive(__id,download_loc):
+    try:
+        if not os.path.exists(download_loc):
+            gdown.download(id=__id, output=download_loc)
+
+        return True
+    except Exception as e:
+        return False

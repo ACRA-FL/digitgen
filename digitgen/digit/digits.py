@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
+from ..augmentation.augmentation import Augmentation
+
 
 def resize_and_align_bounding_box(bbox: list, original_image: np.array, target_width: int, target_height: int):
     y_, x_, _ = original_image.shape
@@ -67,8 +69,11 @@ class DigitConfig(object):
         if isinstance(config_file, str):
             with open(config_file, "r+", encoding="utf-8") as f0:
                 config_file = json.load(f0)
+        try:
+            digit_config = config_file["digit_config"][digit]
+        except KeyError as k:
+            digit_config = config_file["digit_config"]["default"]
 
-        digit_config = config_file["digit_config"][digit]
         common_config = config_file["common_configs"]
         return DigitConfig(
             digit=digit,
@@ -83,8 +88,9 @@ class DigitConfig(object):
 
 
 class DigitOperator(ABC):
-    def __init__(self, resize=None) -> None:
+    def __init__(self, resize=None, augmentations=[]) -> None:
         super().__init__()
+        self.augmentations: list[Augmentation] = augmentations
         self.resize = resize
 
     @abstractmethod
@@ -137,9 +143,27 @@ class DigitOperator(ABC):
     def draw_bbox(self, save_loc: str = None) -> None:
         pass
 
+    def apply_augmentations(self, array, annotations):
+        if len(self.augmentations) > 0:
+            if type(array) == list:
+                for i in range(len(annotations)):
+                    for aug in self.augmentations:
+                        array[i], annotations[i] = aug.apply_augmentation(array[i], annotations[i])
+
+            else:
+                for aug in self.augmentations:
+                    array, annotations = aug.apply_augmentation(array, annotations)
+
+        return array, annotations
+
     def data(self):
         array = self.to_array()
         annotation = self.to_annotation()
+
+        array, annotation = self.apply_augmentations(array, annotation)
+
+        if type(array) == list:
+            array = np.hstack(array)
 
         if self.resize:
             for ann in annotation:
@@ -155,8 +179,8 @@ class Digit(DigitOperator):
     Class That generate single Digit Image
     """
 
-    def __init__(self, config: DigitConfig, size=None, memory: dict = {}) -> None:
-        super().__init__(resize=size)
+    def __init__(self, config: DigitConfig, size=None, memory: dict = {}, augmentations=[]) -> None:
+        super().__init__(augmentations=augmentations, resize=size)
         self.config = config
         self.memory = memory
 
@@ -169,7 +193,7 @@ class Digit(DigitOperator):
         """
 
         annotation = {
-            "category_id": self.config.digit,
+            "category_id": int(self.config.digit) if self.config.digit != " " else " ",
             "bbox": self.config.bbox
         }
 
@@ -222,15 +246,15 @@ class DigitSequence(DigitOperator):
     Class That generate Sequence of Digit Image
     """
 
-    def __init__(self, configs, size=None, memory: dict = {}) -> None:
-        super().__init__(resize=size)
+    def __init__(self, configs, size=None, memory: dict = {}, augmentations=[]) -> None:
+        super().__init__(augmentations=augmentations, resize=size)
         self.configs = configs
         self.__set_offset()
         self.digits = [Digit(config=x, memory=memory) for x in self.configs]
 
     def to_array(self) -> np.array:
         digits_stack = [digit.to_array() for digit in self.digits]
-        return np.hstack(digits_stack)
+        return digits_stack
 
     def __set_offset(self) -> None:
         offset_x = 0
@@ -243,16 +267,7 @@ class DigitSequence(DigitOperator):
             offset_x += each.img_size[0]
 
     def to_annotation(self) -> dict:
-        lis_annotations = []
-
-        for each in self.configs:
-            annotation = {
-                "category_id": int(each.digit) if each.digit != " " else " ",
-                "bbox": each.bbox
-            }
-
-            lis_annotations.append(annotation)
-
+        lis_annotations = [digit.to_annotation() for digit in self.digits]
         return lis_annotations
 
     def draw_bbox(self, save_loc: str = None) -> None:

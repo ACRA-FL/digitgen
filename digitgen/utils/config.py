@@ -1,3 +1,5 @@
+CHUNK_SIZE = 32768
+
 CONFIGURATION = {
     "digit_config": {
         "0": {
@@ -185,6 +187,23 @@ CONFIGURATION = {
                 4,
                 9,
                 26
+            ]
+        },
+        "default": {
+            "fontscale": 30,
+            "size": [
+                10,
+                30
+            ],
+            "start_point": [
+                0,
+                0
+            ],
+            "bbox": [
+                1,
+                1,
+                9,
+                29
             ]
         }
     },
