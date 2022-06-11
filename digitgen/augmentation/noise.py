@@ -1,3 +1,5 @@
+from random import random
+import scipy.ndimage.filters as fi
 import numpy as np
 
 from .augmentation import Augmentation
@@ -64,3 +66,46 @@ class SpeckleNoise(Augmentation):
         noisy = image + image * gauss
 
         return noisy, annotation
+
+class ShadowPatch(Augmentation):
+    def __init__(self, alpha=0.7, probability=1):
+        super(ShadowPatch, self).__init__(probability)
+        self.alpha = alpha
+
+    def augment(self, image, annotation):
+        t = random.randint(0,2)
+        if t == 1:
+            image_size = image.shape
+            kernel_size = (random.randint(0, image_size[0]), random.randint(0, image_size[1]))
+            shadow = np.ones(kernel_size)
+            x_displacement = random.randint(0, (image_size[0]-kernel_size[0])//2)
+            x_remain = image_size[0]-kernel_size[0]-x_displacement
+            y_displacement = random.randint(0, (image_size[1]-kernel_size[1])//2)
+            y_remain = image_size[1]-kernel_size[1]-y_displacement
+            shadow_patch = np.pad(shadow, ((x_displacement, x_remain), (y_displacement, y_remain)), 'constant', constant_values=[0])*255
+            image = np.clip(image - (1-self.alpha)*shadow_patch, 0, 255)
+        return image, annotation
+        
+class FlashSpot(Augmentation):
+    def __init__(self, probability=1):
+        super(FlashSpot, self).__init__(probability)
+
+    def __gkernel(self, kernelLen=21, nsig=3):
+        inp = np.zeros((kernelLen, kernelLen))
+        kernel = fi.gaussian_filter(inp, nsig)
+        return np.clip(kernel/kernel.max(), 0, 1)*255
+
+    def augment(self, image, annotation):
+        t = random.randint(0,2)
+        if t == 1:
+            kernel_size = random.randint(15, 35)
+            nsig = random.randint(1, 7)
+            image_size = image.shape
+            flash = self.__gkernel(kernel_size, nsig)
+            x_displacement = random.randint(0, (image_size[0]-kernel_size)//2)
+            x_remain = image_size[0]-kernel_size-x_displacement
+            y_displacement = random.randint(0, (image_size[1]-kernel_size)//2)
+            y_remain = image_size[1]-kernel_size-y_displacement
+            flash_patch = np.pad(flash, ((x_displacement, x_remain), (y_displacement, y_remain)), 'constant', constant_values=[0])
+            image = np.clip(image + self.alpha*flash_patch, 0, 255)
+        return super().augment(image, annotation)
