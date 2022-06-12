@@ -17,6 +17,7 @@ class GaussianNoise(Augmentation):
         gauss = np.random.normal(self.mean, sigma, (row, col, ch))
         gauss = gauss.reshape(row, col, ch)
         noisy = image + gauss
+        np.clip(noisy, 0, 255)
         return noisy, annotation
 
 
@@ -28,6 +29,7 @@ class PoissonNoise(Augmentation):
         vals = len(np.unique(image))
         vals = 2 ** np.ceil(np.log2(vals))
         noisy = np.random.poisson(image * vals) / float(vals)
+        np.clip(noisy, 0, 255)
         return noisy, annotation
 
 
@@ -52,6 +54,7 @@ class SPNoise(Augmentation):
                   for i in image.shape]
         coords = tuple(coords)
         out[coords] = 0
+        np.clip(out, 0, 255)
         return out, annotation
 
 
@@ -64,7 +67,7 @@ class SpeckleNoise(Augmentation):
         gauss = np.random.randn(row, col, ch)
         gauss = gauss.reshape(row, col, ch)
         noisy = image + image * gauss
-
+        np.clip(noisy, 0, 255)
         return noisy, annotation
 
 class ShadowPatch(Augmentation):
