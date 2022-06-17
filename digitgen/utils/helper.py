@@ -39,12 +39,12 @@ def add_spaces(row, space_type, spaces, sectors, spaces_per_sector, digit_size):
     return row
 
 
-def generate_random_digits(digit_size, allowed_digits, space_type, spaces, sectors, spaces_per_sector):
+def generate_random_digits(digit_size, allowed_digits):
     random_array = np.random.rand(digit_size) * len(allowed_digits)
     random_array = random_array.astype(np.int32)
     row = np.take(allowed_digits, random_array)
 
-    row = add_spaces(row, space_type, spaces, sectors, spaces_per_sector, digit_size)
+
 
     row = "".join(list(map(str, row.tolist())))
 
