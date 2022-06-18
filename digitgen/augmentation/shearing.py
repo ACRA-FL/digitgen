@@ -25,4 +25,18 @@ class RandomImageWidthChange(SequenceAugmentation):
                 shift_factor += rand_int
                 ann["bbox"][2] += shift_factor
 
+        elif self.range_type == "percentage":
+            shift_factor = 0
+            for __id in range(len(images)):
+                rand_int = random.randint(self.width_range[0], self.width_range[1])
+
+                img, ann = images[__id], annotations[__id]
+                rand_int = img.shape[1]*rand_int//100
+
+                images[__id] = cv.resize(img, dsize=(img.shape[1] + rand_int, img.shape[0]))
+
+                ann["bbox"][0] += shift_factor
+                shift_factor += rand_int
+                ann["bbox"][2] += shift_factor
+
         return images, annotations

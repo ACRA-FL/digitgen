@@ -85,6 +85,11 @@ class TestNoiseAugmentation(unittest.TestCase):
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
         digits = DigitSequence(configs=configurations,
                                sequence_augmentations=[RandomImageWidthChange()])
+        test_annotations(array, annotation)
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations,
+                               sequence_augmentations=[
+                                   RandomImageWidthChange(width_range=[0, 99], range_type="percentage")])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
