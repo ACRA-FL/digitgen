@@ -192,17 +192,17 @@ CONFIGURATION = {
         "default": {
             "fontscale": 30,
             "size": [
-                10,
+                20,
                 30
             ],
             "start_point": [
-                0,
+                3,
                 0
             ],
             "bbox": [
                 1,
                 1,
-                9,
+                19,
                 29
             ]
         }
