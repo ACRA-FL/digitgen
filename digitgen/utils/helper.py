@@ -9,6 +9,10 @@ import gdown
 from .config import CHUNK_SIZE
 
 
+def category_id(allowed_digits: list):
+    return {k: v for k, v in enumerate(allowed_digits)}, {v: k for k, v in enumerate(allowed_digits)}
+
+
 def randomly_insert(row, num_times, character):
     arr_char = np.full(num_times, character)
     tot_arr = np.concatenate((row, arr_char))
@@ -39,16 +43,33 @@ def add_spaces(row, space_type, spaces, sectors, spaces_per_sector, digit_size):
     return row
 
 
+def generate_random_digits_with_probability(digit_size, probability: dict):
+    assert 0.999999999 < sum(probability.values()) < 1.000000000001
+
+    allowed_digits = list(probability.keys())
+    proba = list(probability.values())
+
+    return np.random.choice(allowed_digits, size=digit_size, p=proba)
+
+
+def generate_random_digits_with_positional_probability(digit_size, probability: dict):
+    if digit_size != len(probability.keys()):
+        assert "default" in probability.keys()
+
+    __digits = []
+    for digit_id in range(digit_size):
+        try:
+            prob = probability[digit_id]
+        except KeyError as k:
+            prob = probability["default"]
+
+        __digits.append(generate_random_digits_with_probability(None, prob))
+
+    return np.array(__digits)
+
+
 def generate_random_digits(digit_size, allowed_digits):
-    random_array = np.random.rand(digit_size) * len(allowed_digits)
-    random_array = random_array.astype(np.int32)
-    row = np.take(allowed_digits, random_array)
-
-
-
-    row = "".join(list(map(str, row.tolist())))
-
-    return row
+    return np.random.choice(allowed_digits, size=digit_size)
 
 
 def test_annotations(array, annotation):
@@ -64,7 +85,7 @@ def test_annotations(array, annotation):
     image.show()
 
 
-def format_annotations(full_ann, row_ann):
+def format_annotations(full_ann, row_ann, category_map):
     if len(full_ann["annotations"]) == 0:
         current_id = 0
         current_img_id = 0
@@ -78,8 +99,10 @@ def format_annotations(full_ann, row_ann):
 
         full_ann["annotations"].append(ann)
 
+    full_ann["category"] = category_map
 
-def download_font_from_gdrive(__id,download_loc):
+
+def download_font_from_gdrive(__id, download_loc):
     try:
         if not os.path.exists(download_loc):
             gdown.download(id=__id, output=download_loc)

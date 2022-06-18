@@ -16,19 +16,19 @@ class TestNoiseAugmentation(unittest.TestCase):
         self.config["common_configs"]["font_file_loc"] = self.font_type.get_font_file_location()
 
     def test_gaussian_noise(self):
-        configurations = [DigitConfig.load_config(self.config, x) for x in "123 7583847 475845 5849"]
+        configurations = [DigitConfig.load_config(self.config, x) for x in "123 758abc3847 475845 5849"]
         digits = DigitSequence(configs=configurations)
         array, annotation = digits.data()
         test_annotations(array, annotation)
 
-        configurations = [DigitConfig.load_config(self.config, x) for x in "123 7583847 475845 5849"]
+        configurations = [DigitConfig.load_config(self.config, x) for x in "123 75838iilco47 475845 5849"]
         digits = DigitSequence(configs=configurations, augmentations=[GaussianNoise()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
 
     def test_salt_pepper_noise(self):
-        configurations = [DigitConfig.load_config(self.config, x) for x in "123 7583847 475845 5849"]
+        configurations = [DigitConfig.load_config(self.config, x) for x in "123 758vburb3847 475845 5849"]
         digits = DigitSequence(configs=configurations)
         array, annotation = digits.data()
         test_annotations(array, annotation)

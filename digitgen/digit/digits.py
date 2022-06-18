@@ -29,7 +29,8 @@ class DigitConfig(object):
     Class Handling the configurations of the individual Digit image generation.
     """
 
-    def __init__(self, digit: str = None,
+    def __init__(self, digit: str,
+                 category_id: int,
                  font_scale: int = None,
                  img_size: list = None,
                  start_point: list = None,
@@ -49,6 +50,7 @@ class DigitConfig(object):
         self.bbox_color = bbox_color
         self.bbox_width = bbox_width
         self.bbox = bbox
+        self.category_id = category_id
 
     def __repr__(self) -> str:
         display_string = f"\nDigitConfig \n digit :- {self.digit}" \
@@ -58,13 +60,14 @@ class DigitConfig(object):
         return display_string
 
     @staticmethod
-    def load_config(config_file, digit: str):
+    def load_config(config_file, digit: str, category_id:int):
         """
         Load DigitConfig object using configuration file
 
         Args:
             config_file (dict/str): Either the config file location or dictionary loaded wit config
-            digit (str): which digit config is needed 
+            digit (str): which digit config is needed
+            category_id(int): Id of the category
         """
         if isinstance(config_file, str):
             with open(config_file, "r+", encoding="utf-8") as f0:
@@ -77,6 +80,7 @@ class DigitConfig(object):
         common_config = config_file["common_configs"]
         return DigitConfig(
             digit=digit,
+            category_id=category_id,
             font_scale=digit_config["fontscale"],
             img_size=digit_config["size"],
             start_point=digit_config["start_point"],
@@ -193,7 +197,7 @@ class Digit(DigitOperator):
         """
 
         annotation = {
-            "category_id": int(self.config.digit) if self.config.digit != " " else " ",
+            "category_id": self.config.category_id,
             "bbox": self.config.bbox
         }
 
@@ -288,19 +292,3 @@ class DigitSequence(DigitOperator):
         image.show()
         if save_loc:
             image.save(save_loc)
-
-
-if __name__ == "__main__":
-    configuration = DigitConfig.load_config("D:\\ACRA\\ImageGenerationPipeline\\Experiments\\digit_configurations.json",
-                                            "7")
-    print(configuration)
-    created_digit = Digit(config=configuration)
-    # digit.draw_bbox()
-
-    with open("D:\\ACRA\\ImageGenerationPipeline\\Experiments\\digit_configurations.json", "r+",
-              encoding="utf-8") as file_obj:
-        loaded_config_file = json.load(file_obj)
-
-    configurations = [DigitConfig.load_config(loaded_config_file, x) for x in "123 7583847 475845 5849"]
-    digits = DigitSequence(configs=configurations)
-    print(digits.data())
