@@ -104,9 +104,7 @@ def format_annotations(full_ann, row_ann, category_map):
 
 def download_font_from_gdrive(__id, download_loc):
     try:
-        if not os.path.exists(download_loc):
-            gdown.download(id=__id, output=download_loc)
-
+        gdown.download(id=__id, output=download_loc)
         return True
     except Exception as e:
         return False

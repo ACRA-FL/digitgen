@@ -6,6 +6,8 @@ from .font import FontConfig
 from .utils import (format_annotations, generate_random_digits, generate_random_digits_with_probability, add_spaces,
                     category_id, generate_random_digits_with_positional_probability)
 
+from .augmentation import SequenceAugmentation, SingleDigitAugmentation
+
 
 class DigitGenerator(object):
     def __init__(self, digit_size: int,
@@ -17,7 +19,16 @@ class DigitGenerator(object):
         self.digit_size = digit_size
         self.samples = samples
         self.image_size = image_size
-        self.augmentations = augmentations
+        self.digit_augmentations = []
+        self.sequence_augmentation = []
+
+        for aug in augmentations:
+            if isinstance(aug, SingleDigitAugmentation):
+                self.digit_augmentations.append(aug)
+            elif isinstance(aug, SequenceAugmentation):
+                self.sequence_augmentation.append(aug)
+            else:
+                raise NotImplementedError
 
         self.font_type = FontConfig(font_type=font_type)
         self.config = CONFIGURATION
@@ -84,7 +95,8 @@ class DigitGenerator(object):
             configurations = [DigitConfig.load_config(
                 self.config, x, category2id[x]) for x in row]
             digits = DigitSequence(
-                configs=configurations, size=self.image_size, memory=self.memory, augmentations=self.augmentations)
+                configs=configurations, size=self.image_size, memory=self.memory,
+                sequence_augmentations=self.sequence_augmentation, digit_augmentations=self.digit_augmentations)
             array, annotation = digits.data()
             arrays.append(array)
             format_annotations(annotations, annotation, id2category)

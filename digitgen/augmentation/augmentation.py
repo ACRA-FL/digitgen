@@ -8,12 +8,30 @@ class Augmentation(ABC):
         self.probability = probability
 
     @abstractmethod
+    def augment(self, images, annotations):
+        pass
+
+    def apply_augmentation(self, images, annotations):
+        value = random()
+        if value <= self.probability:
+            return self.augment(images, annotations)
+
+        return images, annotations
+
+
+class SingleDigitAugmentation(Augmentation):
+    def __init__(self, probability) -> None:
+        super().__init__(probability)
+
+    @abstractmethod
     def augment(self, image, annotation):
         pass
 
-    def apply_augmentation(self, image, annotation):
-        value = random()
-        if value <= self.probability:
-            return self.augment(image, annotation)
 
-        return image, annotation
+class SequenceAugmentation(Augmentation):
+    def __init__(self, probability) -> None:
+        super().__init__(probability)
+
+    @abstractmethod
+    def augment(self, image, annotation):
+        pass

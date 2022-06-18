@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
-from ..augmentation.augmentation import Augmentation
+from ..augmentation.augmentation import SequenceAugmentation, SingleDigitAugmentation
 
 
 def resize_and_align_bounding_box(bbox: list, original_image: np.array, target_width: int, target_height: int):
@@ -60,7 +60,7 @@ class DigitConfig(object):
         return display_string
 
     @staticmethod
-    def load_config(config_file, digit: str, category_id:int):
+    def load_config(config_file, digit: str, category_id: int):
         """
         Load DigitConfig object using configuration file
 
@@ -92,9 +92,11 @@ class DigitConfig(object):
 
 
 class DigitOperator(ABC):
-    def __init__(self, resize=None, augmentations=[]) -> None:
+    def __init__(self, resize=None, digit_augmentations = [],
+                 sequence_augmentations=[]) -> None:
         super().__init__()
-        self.augmentations: list[Augmentation] = augmentations
+        self.digit_augmentation = digit_augmentations
+        self.sequence_augmentation = sequence_augmentations
         self.resize = resize
 
     @abstractmethod
@@ -148,14 +150,19 @@ class DigitOperator(ABC):
         pass
 
     def apply_augmentations(self, array, annotations):
-        if len(self.augmentations) > 0:
-            if type(array) == list:
+        if type(array) == list:
+            if len(self.digit_augmentation) > 0:
                 for i in range(len(annotations)):
-                    for aug in self.augmentations:
+                    for aug in self.digit_augmentation:
                         array[i], annotations[i] = aug.apply_augmentation(array[i], annotations[i])
 
-            else:
-                for aug in self.augmentations:
+            if len(self.sequence_augmentation) > 0:
+                for aug in self.sequence_augmentation:
+                    array, annotations = aug.apply_augmentation(array, annotations)
+
+        else:
+            if len(self.digit_augmentation) > 0:
+                for aug in self.digit_augmentation:
                     array, annotations = aug.apply_augmentation(array, annotations)
 
         return array, annotations
@@ -183,8 +190,10 @@ class Digit(DigitOperator):
     Class That generate single Digit Image
     """
 
-    def __init__(self, config: DigitConfig, size=None, memory: dict = {}, augmentations=[]) -> None:
-        super().__init__(augmentations=augmentations, resize=size)
+    def __init__(self, config: DigitConfig, size=None, memory: dict = {}, digit_augmentations=[],
+                 sequence_augmentations=[]) -> None:
+        super().__init__(digit_augmentations=digit_augmentations, sequence_augmentations=sequence_augmentations,
+                         resize=size)
         self.config = config
         self.memory = memory
 
@@ -250,8 +259,10 @@ class DigitSequence(DigitOperator):
     Class That generate Sequence of Digit Image
     """
 
-    def __init__(self, configs, size=None, memory: dict = {}, augmentations=[]) -> None:
-        super().__init__(augmentations=augmentations, resize=size)
+    def __init__(self, configs, size=None, memory: dict = {}, digit_augmentations=[],
+                 sequence_augmentations=[]) -> None:
+        super().__init__(digit_augmentations=digit_augmentations, sequence_augmentations=sequence_augmentations,
+                         resize=size)
         self.configs = configs
         self.__set_offset()
         self.digits = [Digit(config=x, memory=memory) for x in self.configs]

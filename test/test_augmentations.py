@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from digitgen import test_annotations
-from digitgen.augmentation import GaussianNoise, SPNoise, SpeckleNoise, PoissonNoise
+from digitgen.augmentation import GaussianNoise, SPNoise, SpeckleNoise, PoissonNoise, RandomImageWidthChange
 from digitgen.digit import DigitSequence, DigitConfig
 from digitgen.font import FontConfig
 from digitgen.utils import CONFIGURATION
@@ -22,7 +22,7 @@ class TestNoiseAugmentation(unittest.TestCase):
         test_annotations(array, annotation)
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "123 75838iilco47 475845 5849"]
-        digits = DigitSequence(configs=configurations, augmentations=[GaussianNoise()])
+        digits = DigitSequence(configs=configurations, digit_augmentations=[GaussianNoise()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
@@ -34,7 +34,7 @@ class TestNoiseAugmentation(unittest.TestCase):
         test_annotations(array, annotation)
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "123 7583847 475845 5849"]
-        digits = DigitSequence(configs=configurations, augmentations=[SPNoise()])
+        digits = DigitSequence(configs=configurations, digit_augmentations=[SPNoise()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
@@ -46,7 +46,7 @@ class TestNoiseAugmentation(unittest.TestCase):
         test_annotations(array, annotation)
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "123 7583847 475845 5849"]
-        digits = DigitSequence(configs=configurations, augmentations=[SpeckleNoise()])
+        digits = DigitSequence(configs=configurations, digit_augmentations=[SpeckleNoise()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
@@ -58,7 +58,7 @@ class TestNoiseAugmentation(unittest.TestCase):
         test_annotations(array, annotation)
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "123 7583pkc 847 475845 5849"]
-        digits = DigitSequence(configs=configurations, augmentations=[PoissonNoise()])
+        digits = DigitSequence(configs=configurations, digit_augmentations=[PoissonNoise()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
@@ -71,7 +71,20 @@ class TestNoiseAugmentation(unittest.TestCase):
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "123 7583847 475845 5849"]
         digits = DigitSequence(configs=configurations,
-                               augmentations=[PoissonNoise(), GaussianNoise(), SPNoise(), SpeckleNoise()])
+                               digit_augmentations=[PoissonNoise(), GaussianNoise(), SPNoise(), SpeckleNoise()])
+        array, annotation = digits.data()
+        test_annotations(array, annotation)
+        self.assertTrue(np.unique(array).shape[0] > 2)
+
+    def test_shearing_augmentations(self):
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations)
+        array, annotation = digits.data()
+        test_annotations(array, annotation)
+
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations,
+                               sequence_augmentations=[RandomImageWidthChange()])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
