@@ -14,7 +14,9 @@ class DigitGenerator(object):
                  font_type: str = "terminal-grotesque-regular",
                  samples=1,
                  image_size=None,
-                 augmentations=[]) -> None:
+                 augmentations=None) -> None:
+        if augmentations is None:
+            augmentations = []
         self.allowed_digits = None
         self.digit_size = digit_size
         self.samples = samples
@@ -37,7 +39,9 @@ class DigitGenerator(object):
         self.generated_digits = None
         self.memory = {}
 
-    def generate_digits(self, allowed_digits=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]):
+    def generate_digits(self, allowed_digits=None):
+        if allowed_digits is None:
+            allowed_digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
         random_lists = []
         for _ in range(self.samples):
             row = generate_random_digits(self.digit_size, allowed_digits)

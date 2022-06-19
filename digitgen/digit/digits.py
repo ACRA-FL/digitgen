@@ -1,9 +1,11 @@
 import json
 from abc import ABC, abstractmethod
+from typing import List
 
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
+from PIL.Image import Image
 
 from ..augmentation.augmentation import SequenceAugmentation, SingleDigitAugmentation
 
@@ -92,9 +94,13 @@ class DigitConfig(object):
 
 
 class DigitOperator(ABC):
-    def __init__(self, resize=None, digit_augmentations = [],
-                 sequence_augmentations=[]) -> None:
+    def __init__(self, resize=None, digit_augmentations=None,
+                 sequence_augmentations=None) -> None:
         super().__init__()
+        if digit_augmentations is None:
+            digit_augmentations = []
+        if sequence_augmentations is None:
+            sequence_augmentations = []
         self.digit_augmentation = digit_augmentations
         self.sequence_augmentation = sequence_augmentations
         self.resize = resize
@@ -116,7 +122,7 @@ class DigitOperator(ABC):
             Image: digit PIL Image
         """
         img_array = self.to_array()
-        print(img_array.shape)
+        # print(img_array.shape)
         return Image.fromarray(img_array)
 
     def show(self) -> None:
@@ -281,7 +287,7 @@ class DigitSequence(DigitOperator):
 
             offset_x += each.img_size[0]
 
-    def to_annotation(self) -> dict:
+    def to_annotation(self) -> List[dict]:
         lis_annotations = [digit.to_annotation() for digit in self.digits]
         return lis_annotations
 

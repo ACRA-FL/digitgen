@@ -1,4 +1,4 @@
-from random import random
+import random
 import scipy.ndimage.filters as fi
 import numpy as np
 
@@ -93,10 +93,12 @@ class ShadowPatch(SingleDigitAugmentation):
 
 
 class FlashSpot(SingleDigitAugmentation):
-    def __init__(self, probability=1):
+    def __init__(self, probability=1, alpha=0.5):
         super(FlashSpot, self).__init__(probability)
+        self.alpha = alpha
 
-    def __gkernel(self, kernelLen=21, nsig=3):
+    @staticmethod
+    def __gkernel(kernelLen=21, nsig=3):
         inp = np.zeros((kernelLen, kernelLen))
         kernel = fi.gaussian_filter(inp, nsig)
         return np.clip(kernel / kernel.max(), 0, 1) * 255
@@ -107,7 +109,7 @@ class FlashSpot(SingleDigitAugmentation):
             kernel_size = random.randint(15, 35)
             nsig = random.randint(1, 7)
             image_size = image.shape
-            flash = self.__gkernel(kernel_size, nsig)
+            flash = FlashSpot.__gkernel(kernel_size, nsig)
             x_displacement = random.randint(0, (image_size[0] - kernel_size) // 2)
             x_remain = image_size[0] - kernel_size - x_displacement
             y_displacement = random.randint(0, (image_size[1] - kernel_size) // 2)
