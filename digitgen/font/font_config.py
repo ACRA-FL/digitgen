@@ -25,7 +25,9 @@ class FontConfig:
             path_to_download = os.path.join(self.font_dir, "terminal-grotesque-regular.ttf")
             file_id = "1N68bQ4s2bFkH-y9ZWbzs7XoXddhUDY1V"
 
-            if download_font_from_gdrive(file_id, path_to_download):
-                print(f"Downloaded font type {self.font_type}")
-            else:
-                print(f"Download Failed")
+            if not os.path.exists(path_to_download):
+                if download_font_from_gdrive(file_id, path_to_download):
+                    print(f"Downloaded font type {self.font_type}")
+                else:
+                    print(f"Download Failed")
+

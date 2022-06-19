@@ -63,7 +63,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 15,
@@ -80,7 +80,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 15,
@@ -97,7 +97,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 15,
@@ -114,7 +114,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 15,
@@ -131,7 +131,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 15,
@@ -148,7 +148,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 14,
@@ -165,7 +165,7 @@ CONFIGURATION = {
                 0,
                 0
             ],
-            "bbox":  [
+            "bbox": [
                 0,
                 4,
                 16,
