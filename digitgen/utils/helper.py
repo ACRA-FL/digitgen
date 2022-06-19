@@ -1,12 +1,7 @@
-import os.path
-
+import gdown
 import numpy as np
-import requests
 from PIL import ImageDraw, Image
 from numpy import random
-import gdown
-
-from .config import CHUNK_SIZE
 
 
 def category_id(allowed_digits: list):
@@ -60,7 +55,7 @@ def generate_random_digits_with_positional_probability(digit_size, probability: 
     for digit_id in range(digit_size):
         try:
             prob = probability[digit_id]
-        except KeyError as k:
+        except KeyError:
             prob = probability["default"]
 
         __digits.append(generate_random_digits_with_probability(None, prob))
@@ -104,9 +99,7 @@ def format_annotations(full_ann, row_ann, category_map):
 
 def download_font_from_gdrive(__id, download_loc):
     try:
-        if not os.path.exists(download_loc):
-            gdown.download(id=__id, output=download_loc)
-
+        gdown.download(id=__id, output=download_loc)
         return True
     except Exception as e:
         return False
