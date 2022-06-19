@@ -5,9 +5,6 @@ from typing import List
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
-from PIL.Image import Image
-
-from ..augmentation.augmentation import SequenceAugmentation, SingleDigitAugmentation
 
 
 def resize_and_align_bounding_box(bbox: list, original_image: np.array, target_width: int, target_height: int):
