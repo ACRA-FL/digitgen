@@ -15,7 +15,7 @@ setup(
     url='https://github.com/ACRA-FL/digitgen.git',
     author='DevinDeSilva',
     author_email='devindesilva123@gmail.com',
-    packages=['digitgen', 'digitgen/digit', 'digitgen/utils', 'digitgen/augmentation'],
+    packages=['digitgen', 'digitgen/digit', 'digitgen/utils', 'digitgen/augmentation', "digitgen/font"],
     license='MIT',
     python_requires='>=3.8, <4',
     install_requires=['numpy', 'pillow', 'opencv-python','gdown'],
