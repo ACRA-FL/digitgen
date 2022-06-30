@@ -2,6 +2,7 @@ import numpy as np
 
 from .digit import DigitConfig, DigitSequence
 from .utils import CONFIGURATION
+from .utils import convert_to_grayscale
 from .font import FontConfig
 from .utils import (format_annotations, generate_random_digits, generate_random_digits_with_probability, add_spaces,
                     category_id, generate_random_digits_with_positional_probability)
@@ -13,6 +14,7 @@ class DigitGenerator(object):
     def __init__(self, digit_size: int,
                  font_type: str = "terminal-grotesque-regular",
                  samples=1,
+                 gray_scale=False,
                  image_size=None,
                  augmentations=None) -> None:
         if augmentations is None:
@@ -23,6 +25,7 @@ class DigitGenerator(object):
         self.image_size = image_size
         self.digit_augmentations = []
         self.sequence_augmentation = []
+        self.gray_scaled = gray_scale
 
         for aug in augmentations:
             if isinstance(aug, SingleDigitAugmentation):
@@ -105,4 +108,7 @@ class DigitGenerator(object):
             arrays.append(array)
             format_annotations(annotations, annotation, id2category)
 
-        return np.array(arrays), annotations
+        arrays = np.array(arrays)
+        if self.gray_scaled:
+            arrays = convert_to_grayscale(arrays)
+        return arrays, annotations
