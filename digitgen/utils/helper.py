@@ -15,6 +15,12 @@ def randomly_insert(row, num_times, character):
     return tot_arr
 
 
+def convert_to_grayscale(arr, conv=None):
+    if conv is None:
+        conv = [0.2989, 0.5870, 0.1140]
+    return np.dot(arr[..., :3], conv)
+
+
 def split_insert(row, sectors, spaces_per_sector, digit_size, character):
     gap = digit_size // sectors
     for gap_num in range(1, sectors):
