@@ -15,6 +15,7 @@ class DigitGenerator(object):
                  font_type: str = "terminal-grotesque-regular",
                  samples=1,
                  gray_scale=False,
+                 transpose=False,
                  image_size=None,
                  augmentations=None) -> None:
         if augmentations is None:
@@ -26,6 +27,7 @@ class DigitGenerator(object):
         self.digit_augmentations = []
         self.sequence_augmentation = []
         self.gray_scaled = gray_scale
+        self.transpose = transpose
 
         for aug in augmentations:
             if isinstance(aug, SingleDigitAugmentation):
@@ -105,6 +107,10 @@ class DigitGenerator(object):
                 configs=configurations, size=self.image_size, memory=self.memory,
                 sequence_augmentations=self.sequence_augmentation, digit_augmentations=self.digit_augmentations)
             array, annotation = digits.data()
+
+            if self.transpose:
+                array = np.transpose(array, axes=(1, 0, 2))
+
             arrays.append(array)
             format_annotations(annotations, annotation, id2category)
 
