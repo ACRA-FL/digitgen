@@ -1,6 +1,7 @@
 from . augmentation import SingleDigitAugmentation
 from . augmentation import SequenceAugmentation
 from . shearing import RandomImageWidthChange
+from . shearing import AscendingImageWidthChange
 from . noise import GaussianNoise
 from . noise import SPNoise
 from . noise import PoissonNoise
@@ -17,5 +18,6 @@ __all__ = [
     'PoissonNoise',
     'SPNoise',
     "SequenceAugmentation",
-    "RandomImageWidthChange"
+    "RandomImageWidthChange",
+    "AscendingImageWidthChange"
 ]
