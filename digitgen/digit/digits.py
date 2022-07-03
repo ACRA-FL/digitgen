@@ -81,13 +81,16 @@ class DigitConfig(object):
             digit=digit,
             category_id=category_id,
             font_scale=digit_config["fontscale"],
-            img_size=digit_config["size"],
+            img_size=digit_config["size"][:],
             start_point=digit_config["start_point"],
             bbox=digit_config["bbox"][:],
             font_file_loc=common_config["font_file_loc"],
             bbox_color=common_config["bbox_color"],
             bbox_width=common_config["bbox_width"]
         )
+
+    def signature(self):
+        return f"{self.digit}_{self.font_scale}_{self.img_size}_{self.start_point}_{self.bbox}_{self.bbox_color} "
 
 
 class DigitOperator(ABC):
@@ -251,10 +254,10 @@ class Digit(DigitOperator):
 
     def to_array(self) -> np.array:
         try:
-            return self.memory[self.config.digit]
+            return self.memory[self.config.signature()]
         except KeyError:
-            self.memory[self.config.digit] = self.__gen_img_array()
-            return self.memory[self.config.digit]
+            self.memory[self.config.signature()] = self.__gen_img_array()
+            return self.memory[self.config.signature()]
 
 
 class DigitSequence(DigitOperator):

@@ -3,7 +3,8 @@ import unittest
 import numpy as np
 
 from digitgen import test_annotations
-from digitgen.augmentation import GaussianNoise, SPNoise, SpeckleNoise, PoissonNoise, RandomImageWidthChange
+from digitgen.augmentation import GaussianNoise, SPNoise, SpeckleNoise, PoissonNoise, RandomImageWidthChange, \
+    AscendingImageWidthChange
 from digitgen.digit import DigitSequence, DigitConfig
 from digitgen.font import FontConfig
 from digitgen.utils import CONFIGURATION
@@ -84,12 +85,32 @@ class TestNoiseAugmentation(unittest.TestCase):
 
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
         digits = DigitSequence(configs=configurations,
-                               sequence_augmentations=[RandomImageWidthChange()])
+                               sequence_augmentations=[RandomImageWidthChange(width_range=[0, 20])])
+        array, annotation = digits.data()
         test_annotations(array, annotation)
         configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
         digits = DigitSequence(configs=configurations,
                                sequence_augmentations=[
                                    RandomImageWidthChange(width_range=[0, 99], range_type="percentage")])
+        array, annotation = digits.data()
+        test_annotations(array, annotation)
+        self.assertTrue(np.unique(array).shape[0] > 2)
+
+    def test_ascending_shearing_augmentations(self):
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations)
+        array, annotation = digits.data()
+        test_annotations(array, annotation)
+
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations,
+                               sequence_augmentations=[AscendingImageWidthChange(width_increment=5)])
+        array, annotation = digits.data()
+        test_annotations(array, annotation)
+        configurations = [DigitConfig.load_config(self.config, x, 0) for x in "1237588ncjd 47 475845 5849"]
+        digits = DigitSequence(configs=configurations,
+                               sequence_augmentations=[
+                                   AscendingImageWidthChange(width_increment=0.2, range_type="percentage")])
         array, annotation = digits.data()
         test_annotations(array, annotation)
         self.assertTrue(np.unique(array).shape[0] > 2)
