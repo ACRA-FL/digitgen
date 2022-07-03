@@ -5,7 +5,7 @@ from .utils import CONFIGURATION
 from .utils import convert_to_grayscale
 from .font import FontConfig
 from .utils import (format_annotations, generate_random_digits, generate_random_digits_with_probability, add_spaces,
-                    category_id, generate_random_digits_with_positional_probability)
+                    category_id, generate_random_digits_with_positional_probability, change_between_configs)
 
 from .augmentation import SequenceAugmentation, SingleDigitAugmentation
 
@@ -42,7 +42,10 @@ class DigitGenerator(object):
         self.config["common_configs"]["font_file_loc"] = self.font_type.get_font_file_location()
 
         self.generated_digits = None
+        self.generated_configs = []
         self.memory = {}
+        self.id2category = None
+        self.category2id = None
 
     def generate_digits(self, allowed_digits=None):
         if allowed_digits is None:
@@ -88,6 +91,26 @@ class DigitGenerator(object):
         self.allowed_digits.append(" ")
         self.generated_digits = space_lists
 
+    def generate_digit_config(self):
+        id2category, category2id = category_id(self.allowed_digits)
+
+        self.id2category = id2category
+        self.category2id = category2id
+
+        for row_id in range(self.samples):
+            row = self.generated_digits[row_id]
+            configurations = [DigitConfig.load_config(
+                self.config, x, category2id[x]) for x in row]
+
+            self.generated_configs.append(configurations)
+
+    def add_width_digits(self, mode="constant", pixel_value=5, pixel_range=None):
+        if pixel_range is None:
+            pixel_range = [0, 20]
+
+        change_between_configs(self.generated_configs, mode, pixel_value, pixel_range, self.samples,
+                               self.digit_size)
+
     def generate_dataset(self):
         """
         Generator function of the dataset
@@ -96,15 +119,11 @@ class DigitGenerator(object):
             Sequence[tuple[np.array,dict]]: img_array,annotation
         """
 
-        id2category, category2id = category_id(self.allowed_digits)
-
         annotations = {"annotations": []}
         arrays = []
-        for row in self.generated_digits:
-            configurations = [DigitConfig.load_config(
-                self.config, x, category2id[x]) for x in row]
+        for row in self.generated_configs:
             digits = DigitSequence(
-                configs=configurations, size=self.image_size, memory=self.memory,
+                configs=row, size=self.image_size, memory=self.memory,
                 sequence_augmentations=self.sequence_augmentation, digit_augmentations=self.digit_augmentations)
             array, annotation = digits.data()
 
@@ -112,7 +131,7 @@ class DigitGenerator(object):
                 array = np.transpose(array, axes=(1, 0, 2))
 
             arrays.append(array)
-            format_annotations(annotations, annotation, id2category)
+            format_annotations(annotations, annotation, self.id2category)
 
         arrays = np.array(arrays)
         if self.gray_scaled:

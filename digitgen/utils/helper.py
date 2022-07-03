@@ -2,6 +2,7 @@ import gdown
 import numpy as np
 from PIL import ImageDraw, Image
 from numpy import random
+import random as py_ran
 
 
 def category_id(allowed_digits: list):
@@ -13,6 +14,28 @@ def randomly_insert(row, num_times, character):
     tot_arr = np.concatenate((row, arr_char))
     random.shuffle(tot_arr)
     return tot_arr
+
+
+def changing_width_constant_digits(configs, samples, digit_size, pixel_value):
+    for row_id in range(samples):
+        for each_id in range(digit_size - 1):
+            configs[row_id][each_id].img_size[0] = configs[row_id][each_id].img_size[0] + pixel_value
+
+
+def changing_width_random_digits(configs, samples, digit_size, pixel_range):
+    for row_id in range(samples):
+        for each_id in range(digit_size - 1):
+            ran_num = py_ran.randint(pixel_range[0], pixel_range[1])
+            configs[row_id][each_id].img_size[0] += ran_num
+
+
+def change_between_configs(configs, mode, pixel_value, pixel_range, samples, digit_size):
+    if mode == "constant":
+        changing_width_constant_digits(configs, samples, digit_size, pixel_value)
+    elif mode == "random":
+        changing_width_random_digits(configs, samples, digit_size, pixel_range)
+    else:
+        pass
 
 
 def convert_to_grayscale(arr, conv=None):
