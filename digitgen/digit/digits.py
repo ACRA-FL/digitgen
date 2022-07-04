@@ -92,7 +92,7 @@ class DigitConfig(object):
         )
 
     def signature(self):
-        return f"{self.digit}_{self.font_scale}_{self.img_size}_{self.start_point}_{self.bbox}_{self.bbox_color} "
+        return f"{self.digit}_{self.img_size}_{self.bbox}_{self.bbox_color}_{self.background_color}_{self.digit_color}"
 
 
 class DigitOperator(ABC):

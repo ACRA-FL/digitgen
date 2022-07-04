@@ -5,7 +5,8 @@ from .utils import CONFIGURATION
 from .utils import convert_to_grayscale
 from .font import FontConfig
 from .utils import (format_annotations, generate_random_digits, generate_random_digits_with_probability, add_spaces,
-                    category_id, generate_random_digits_with_positional_probability, change_between_configs)
+                    category_id, generate_random_digits_with_positional_probability, change_between_configs,
+                    randomly_invert_config_color)
 
 from .augmentation import SequenceAugmentation, SingleDigitAugmentation
 
@@ -49,9 +50,7 @@ class DigitGenerator(object):
 
     def change_common_config(self, changes: dict):
         for k, v in changes.items():
-            print(k, self.config["common_configs"][k])
             self.config["common_configs"][k] = v
-            print(k, self.config["common_configs"][k])
 
     def generate_digits(self, allowed_digits=None):
         if allowed_digits is None:
@@ -116,6 +115,9 @@ class DigitGenerator(object):
 
         change_between_configs(self.generated_configs, mode, pixel_value, pixel_range, self.samples,
                                self.digit_size)
+
+    def randomly_invert_color(self, probability=0.5, background_color=(0, 0, 0), digit_color=(255, 255, 255)):
+        randomly_invert_config_color(self.generated_configs, probability, background_color, digit_color)
 
     def generate_dataset(self):
         """

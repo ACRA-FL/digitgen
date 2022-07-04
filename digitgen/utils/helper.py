@@ -16,6 +16,16 @@ def randomly_insert(row, num_times, character):
     return tot_arr[:len(row)]
 
 
+def randomly_invert_config_color(configs, probability, background_color, digit_color):
+    for row in configs:
+        ran_val = py_ran.random()
+
+        if ran_val < probability:
+            for config in row:
+                config.background_color = background_color
+                config.digit_color = digit_color
+
+
 def changing_width_constant_digits(configs, samples, digit_size, pixel_value):
     for row_id in range(samples):
         for each_id in range(digit_size - 1):

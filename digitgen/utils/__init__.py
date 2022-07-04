@@ -8,6 +8,7 @@ from . helper import generate_random_digits_with_positional_probability
 from . helper import category_id
 from . helper import convert_to_grayscale
 from . helper import change_between_configs
+from . helper import randomly_invert_config_color
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,5 +24,6 @@ __all__ = [
     "generate_random_digits_with_positional_probability",
     "category_id",
     "convert_to_grayscale",
-    "change_between_configs"
+    "change_between_configs",
+    "randomly_invert_config_color"
 ]
