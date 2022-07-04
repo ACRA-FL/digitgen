@@ -29,4 +29,5 @@ class TestDigitSpaces(unittest.TestCase):
         digit_gen.generate_digit_config()
         ret_arr, ret_ann = digit_gen.generate_dataset()
         test_annotations(ret_arr[0], [x for x in ret_ann["annotations"] if x["image_id"] == 0])
+        print([x["category_id"] for x in ret_ann["annotations"] if x["image_id"] == 0])
         self.assertTrue(len([x for x in ret_ann["annotations"] if x["image_id"] == 0]) == digit_gen.digit_size)

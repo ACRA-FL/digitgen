@@ -86,7 +86,9 @@ class DigitConfig(object):
             bbox=digit_config["bbox"][:],
             font_file_loc=common_config["font_file_loc"],
             bbox_color=common_config["bbox_color"],
-            bbox_width=common_config["bbox_width"]
+            bbox_width=common_config["bbox_width"],
+            background_color=common_config["background_color"],
+            digit_color=common_config["digit_color"],
         )
 
     def signature(self):

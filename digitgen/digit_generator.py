@@ -47,6 +47,12 @@ class DigitGenerator(object):
         self.id2category = None
         self.category2id = None
 
+    def change_common_config(self, changes: dict):
+        for k, v in changes.items():
+            print(k, self.config["common_configs"][k])
+            self.config["common_configs"][k] = v
+            print(k, self.config["common_configs"][k])
+
     def generate_digits(self, allowed_digits=None):
         if allowed_digits is None:
             allowed_digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]

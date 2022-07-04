@@ -208,16 +208,16 @@ CONFIGURATION = {
         }
     },
     "common_configs": {
-        "background_color": [
+        "background_color": (
             255,
             255,
             255
-        ],
-        "digit_color": [
+        ),
+        "digit_color": (
             0,
             0,
             0
-        ],
+        ),
         "bbox_color": [
             255,
             82,
