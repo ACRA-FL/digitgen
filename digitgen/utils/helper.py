@@ -17,13 +17,17 @@ def randomly_insert(row, num_times, character):
 
 
 def randomly_invert_config_color(configs, probability, background_color, digit_color):
+    n = 0
     for row in configs:
         ran_val = py_ran.random()
 
         if ran_val < probability:
+            n += 1
             for config in row:
                 config.background_color = background_color
                 config.digit_color = digit_color
+
+    print(f"num of inverts:-{n}")
 
 
 def changing_width_constant_digits(configs, samples, digit_size, pixel_value):
