@@ -18,7 +18,7 @@ setup(
     packages=['digitgen', 'digitgen/digit', 'digitgen/utils', 'digitgen/augmentation', "digitgen/font"],
     license='MIT',
     python_requires='>=3.8, <4',
-    install_requires=['numpy', 'pillow', 'opencv-python','gdown'],
+    install_requires=['numpy', 'pillow', 'opencv-python', 'gdown', 'scipy'],
     extras_require={
         'dev': ['check-manifest',
                 'pytest>=3.7'],
