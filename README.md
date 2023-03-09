@@ -1,3 +1,6 @@
+![Version](https://img.shields.io/pypi/v/digitgen)
+![Downloads](https://img.shields.io/pypi/dm/digitgen)
+![Tests Passing](https://github.com/ACRA-FL/digitgen/actions/workflows/package-test.yml/badge.svg)
 
 # digitgen
 
