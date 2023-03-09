@@ -8,7 +8,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='digitgen',
-    version='0.6.7',
+    version='0.6.8',
     description='Synthetic Digit Generator',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -18,6 +18,7 @@ setup(
     packages=['digitgen', 'digitgen/digit', 'digitgen/utils', 'digitgen/augmentation', "digitgen/font"],
     license='MIT',
     python_requires='>=3.8, <4',
+    include_package_data=True,
     install_requires=['numpy', 'pillow', 'opencv-python', 'gdown', 'scipy'],
     extras_require={
         'dev': ['check-manifest',
