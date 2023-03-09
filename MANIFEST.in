@@ -1,2 +1,3 @@
 include LICENSE
 include requirement.txt
+include digitgen/font/fonts/terminal-grotesque-regular.ttf

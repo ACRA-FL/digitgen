@@ -8,7 +8,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='digitgen',
-    version='0.6.8',
+    version='0.6.9',
     description='Synthetic Digit Generator',
     long_description=long_description,
     long_description_content_type='text/markdown',
