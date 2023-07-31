@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "Python Library for build synthetic Scene Text Dataset, in Lazzy generation model."
+authors:
+  - family-names: De Silva
+    given-names: Devin
+    orcid: https://orcid.org/0000-0001-6678-6227
+  - family-name: Pathirage
+    given-names: Deelaka
+    orcid: https://orcid.org/0000-0002-9313-0925
+title: "DigitGen"
+version: 0.6.9
+date-released: 2022-05-09
