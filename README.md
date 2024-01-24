@@ -1,5 +1,6 @@
 ![Version](https://img.shields.io/pypi/v/digitgen)
-![Downloads](https://img.shields.io/pypi/dm/digitgen)
+[![Downloads](https://static.pepy.tech/badge/digitgen)](https://pepy.tech/project/digitgen)
+[![Downloads](https://static.pepy.tech/badge/digitgen/month)](https://pepy.tech/project/digitgen)
 ![Tests Passing](https://github.com/ACRA-FL/digitgen/actions/workflows/package-test.yml/badge.svg)
 
 # digitgen
